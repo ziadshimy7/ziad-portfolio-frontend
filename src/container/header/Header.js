@@ -19,7 +19,6 @@ const scaleVariants = {
 
 const Header = () => {
   const [cvURL, setCvURL] = useState("");
-  console.log(cvURL);
   const getCV = async () => {
     const cv = await axios.get(`${API_URL}download`, {
       responseType: "arraybuffer",
@@ -53,7 +52,7 @@ const Header = () => {
           </div>
           <div className="tag-cmp app__flex">
             <a href={cvURL} className="app__cv-link p-text">
-              Download CV
+              Download Resume
               <BsDownload />
             </a>
           </div>
