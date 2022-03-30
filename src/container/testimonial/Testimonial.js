@@ -8,30 +8,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Brands } from "../../components";
 import axios from "axios";
 import { API_URL } from "../../config/config";
-// const testimonials = [
-//   {
-//     img: images.john,
-//     comment:
-//       "Love working with Orion. Orion is a great place to work. The people are friendly, helpful and very knowledgeable. I recommend Orion to anyone looking for a job.",
-//     name: "John Doe",
-//     position: "CEO & Founder at Apple",
-//   },
-//   {
-//     img: images.about01,
-//     comment:
-//       "Love working with Orion. Orion is a great place to work. The people are friendly, helpful and very knowledgeable. I recommend Orion to anyone looking for a job.",
-//     name: "Tanya Doe",
-//     position: "CEO & Founder at Facebook",
-//   },
-//   {
-//     img: images.about02,
-//     comment:
-//       "Originally I was looking for a job as a frontend developer but I found Orion. Orion is a great place to work. The people are friendly, helpful and very knowledgeable. I recommend Orion to anyone looking for a job.",
-//     name: "Ziad Doe",
-//     position: "CEO & Founder at Amazon",
-//   },
-// ];
-
 const Testimonial = () => {
   const [testimonialIndex, setTestimonialIndex] = useState(0);
   const [animationDirecton, setAnimationDirection] = useState("right");

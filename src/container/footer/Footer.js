@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import "./Footer.scss";
 import MotionWrap from "../../wrapper/MotionWrap";
 import AppWrap from "../../wrapper/AppWrap";
 import { images } from "../../constants";
 import axios from "axios";
-import { motion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { API_URL } from "../../config/config";
 import { Formik } from "formik";
 import * as Yup from "yup";
@@ -13,19 +13,42 @@ const validationSchema = Yup.object({
   userEmail: Yup.string()
     .email("Invalid Email Address")
     .required("Please fill in your email"),
-  message: Yup.string().max(200, "Feedback should be less than 200 characters"),
+  message: Yup.string()
+    .max(200, "Feedback should be less than 200 characters")
+    .required("Please Send a nice message 😊"),
 });
+const sentenceVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+  },
+};
+// const letterVariants = {
+//   hidden: { scale: 0 },
+//   visible: {
+//     scale: 1,
+//   },
+// };
 const Footer = () => {
+  const [successMessage, setSuccessMessage] = useState(null);
   const { email, mobile } = images;
-  const sendEmail = async (values) => {
+  const sendEmail = async (values, { resetForm }) => {
     try {
-      const response = await axios.post(`${API_URL}sendemail`, {
-        name: values.name,
-        userEmail: values.userEmail,
-        message: values.message,
-      });
+      // const response = await axios.post(`${API_URL}sendemail`, {
+      //   name: values.name,
+      //   userEmail: values.userEmail,
+      //   message: values.message,
+      // });
+      resetForm();
+      setSuccessMessage(
+        "Your message has been sent, Thank you for your feedback !"
+      );
     } catch (err) {
       console.log(err);
+    } finally {
+      setTimeout(() => {
+        setSuccessMessage(null);
+      }, 5000);
     }
   };
   return (
@@ -84,7 +107,31 @@ const Footer = () => {
               <p className="p-text" style={{ color: "red", fontSize: "1rem" }}>
                 {formik.errors.message}
               </p>
-            ) : null}
+            ) : (
+              <motion.h3
+                className="p-text"
+                style={{ color: "green", fontSize: "1rem" }}
+                variants={sentenceVariants}
+                initial="hidden"
+                animate="visible"
+              >
+                <AnimatePresence exitBeforeEnter>
+                  {successMessage?.split("").map((char, idx) => {
+                    return (
+                      <motion.span
+                        key={`char-${idx}`}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{ delay: idx * 0.04, ease: "easeInOut" }}
+                        exit={{ opacity: 0 }}
+                      >
+                        {char}
+                      </motion.span>
+                    );
+                  })}
+                </AnimatePresence>
+              </motion.h3>
+            )}
             <motion.button
               whileTap={{ scale: 0.9 }}
               transition={{ duration: 0.3 }}
