@@ -73,5 +73,9 @@
     font-weight: 500;
     margin: 2rem 0 0;
     font-family: var(--font-base);
+    &:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
   }
 }

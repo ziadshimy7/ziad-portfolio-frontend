@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import "./Footer.scss";
 import MotionWrap from "../../wrapper/MotionWrap";
 import AppWrap from "../../wrapper/AppWrap";
@@ -6,47 +6,26 @@ import { images } from "../../constants";
 import axios from "axios";
 import { motion } from "framer-motion";
 import { API_URL } from "../../config/config";
+import { Formik } from "formik";
+import * as Yup from "yup";
+const validationSchema = Yup.object({
+  name: Yup.string().required("Please fill in your name"),
+  userEmail: Yup.string()
+    .email("Invalid Email Address")
+    .required("Please fill in your email"),
+  message: Yup.string().max(200, "Feedback should be less than 200 characters"),
+});
 const Footer = () => {
   const { email, mobile } = images;
-  const [name, setName] = useState("");
-  const [userEmail, setUserEmail] = useState("");
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState(null);
-  const [messageSuccess, setMessageSuccess] = useState("");
-  const validateInputs = () => {
-    const validEmailRegex =
-      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
-    if (
-      message.trim() !== "" &&
-      userEmail.match(validEmailRegex) &&
-      name.trim() !== ""
-    ) {
-      return true;
-    }
-    setError(
-      "Please fill in all of the inputs and make sure the email is valid."
-    );
-  };
-  const sendEmail = async (e) => {
-    e.preventDefault();
-    if (!validateInputs()) {
-      return;
-    }
-    setName("");
-    setMessage("");
-    setUserEmail("");
-    setError(null);
+  const sendEmail = async (values) => {
     try {
       const response = await axios.post(`${API_URL}sendemail`, {
-        name,
-        userEmail,
-        message,
+        name: values.name,
+        userEmail: values.userEmail,
+        message: values.message,
       });
-      setMessageSuccess(
-        "Your message has been sent, Thank you for your feedback !"
-      );
     } catch (err) {
-      setError(err.message);
+      console.log(err);
     }
   };
   return (
@@ -64,50 +43,60 @@ const Footer = () => {
           <p className="p-text">+7 (912) 239-00-87</p>
         </div>
       </div>
-      <form className="app__footer-form">
-        <input
-          onChange={(e) => {
-            setName(e.target.value);
-          }}
-          className="p-text"
-          type="text"
-          value={name}
-          placeholder="Your Name"
-        />
-        <input
-          onChange={(e) => {
-            setUserEmail(e.target.value);
-          }}
-          className="p-text"
-          type="text"
-          value={userEmail}
-          placeholder="Your Email"
-        />
-        <textarea
-          value={message}
-          onChange={(e) => {
-            setMessage(e.target.value);
-          }}
-          className="p-text"
-          placeholder="Your Message"
-        ></textarea>
-        {error ? (
-          <p className="p-text" style={{ color: "red", fontSize: "1rem" }}>
-            {error}
-          </p>
-        ) : (
-          <p style={{ color: "green", fontSize: "1rem" }}>{messageSuccess}</p>
+      <Formik
+        initialValues={{ name: "", userEmail: "", message: "" }}
+        onSubmit={sendEmail}
+        validationSchema={validationSchema}
+      >
+        {(formik) => (
+          <form onSubmit={formik.handleSubmit} className="app__footer-form">
+            <input
+              className="p-text"
+              type="text"
+              value={formik.values.name}
+              placeholder="Your Name"
+              {...formik.getFieldProps("name")}
+            />
+            {formik.touched.name && formik.errors.name ? (
+              <p className="p-text" style={{ color: "red", fontSize: "1rem" }}>
+                {formik.errors.name}
+              </p>
+            ) : null}
+            <input
+              className="p-text"
+              type="text"
+              value={formik.values.userEmail}
+              placeholder="Your Email"
+              {...formik.getFieldProps("userEmail")}
+            />
+            {formik.touched.userEmail && formik.errors.userEmail ? (
+              <p className="p-text" style={{ color: "red", fontSize: "1rem" }}>
+                {formik.errors.userEmail}
+              </p>
+            ) : null}
+            <textarea
+              value={formik.values.message}
+              className="p-text"
+              placeholder="Your Message"
+              {...formik.getFieldProps("message")}
+            ></textarea>
+            {formik.touched.message && formik.errors.message ? (
+              <p className="p-text" style={{ color: "red", fontSize: "1rem" }}>
+                {formik.errors.message}
+              </p>
+            ) : null}
+            <motion.button
+              whileTap={{ scale: 0.9 }}
+              transition={{ duration: 0.3 }}
+              className="app__footer-btn p-text"
+              type="submit"
+              disabled={!(formik.isValid && formik.dirty)}
+            >
+              Send Message
+            </motion.button>
+          </form>
         )}
-        <motion.button
-          whileTap={{ scale: 0.9 }}
-          transition={{ duration: 0.3 }}
-          onClick={sendEmail}
-          className="app__footer-btn p-text"
-          type="submit"
-        >
-          Send Message
-        </motion.button>
-      </form>
+      </Formik>
     </div>
   );
 };
