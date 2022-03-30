@@ -34,11 +34,11 @@ const Footer = () => {
   const { email, mobile } = images;
   const sendEmail = async (values, { resetForm }) => {
     try {
-      // const response = await axios.post(`${API_URL}sendemail`, {
-      //   name: values.name,
-      //   userEmail: values.userEmail,
-      //   message: values.message,
-      // });
+      const response = await axios.post(`${API_URL}sendemail`, {
+        name: values.name,
+        userEmail: values.userEmail,
+        message: values.message,
+      });
       resetForm();
       setSuccessMessage(
         "Your message has been sent, Thank you for your feedback !"
