@@ -6,18 +6,23 @@ import "./Work.scss";
 import Card from "../../UI/Card";
 import MotionWrap from "../../wrapper/MotionWrap";
 import { API_URL } from "../../config/config";
+import FadeLoader from "react-spinners/FadeLoader";
 
 const Work = () => {
   const [activeFilter, setActiveFilter] = useState("All");
+  const [loading, setIsLoading] = useState(true);
   const [works, setWorks] = useState([]);
   const animateCard = { y: 0, opacity: 1 };
   const handleWorkFilter = (item) => {};
   const fetchWork = async () => {
     try {
+      setIsLoading(true);
       const worksData = await axios.get(`${API_URL}work`);
       if (worksData) setWorks(worksData.data);
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
   useEffect(() => {
@@ -50,6 +55,18 @@ const Work = () => {
         transition={{ duration: 0.5, delayChildren: 0.5 }}
         className="app__work-portfolio"
       >
+        {loading && (
+          <div className="app__loader">
+            <FadeLoader
+              size="20px"
+              height={15}
+              width={5}
+              radius={2}
+              margin={2}
+              color="red"
+            />
+          </div>
+        )}
         {works?.map((item, idx) => (
           <Card
             key={item + idx}

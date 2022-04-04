@@ -2,6 +2,11 @@
   background-color: var(--primary-color);
   font-family: var(--font-base);
 }
+.app__loader {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+}
 
 .app__whitebg {
   background-color: var(--white-color);

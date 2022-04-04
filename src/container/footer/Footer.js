@@ -23,12 +23,6 @@ const sentenceVariants = {
     opacity: 1,
   },
 };
-// const letterVariants = {
-//   hidden: { scale: 0 },
-//   visible: {
-//     scale: 1,
-//   },
-// };
 const Footer = () => {
   const [successMessage, setSuccessMessage] = useState(null);
   const { email, mobile } = images;

@@ -2,13 +2,14 @@ import React, { useEffect, useState } from "react";
 import "./Testimonial.scss";
 import AppWrap from "../../wrapper/AppWrap";
 import MotionWrap from "../../wrapper/MotionWrap";
-import { images } from "../../constants";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 import { Brands } from "../../components";
 import axios from "axios";
 import { API_URL } from "../../config/config";
+import FadeLoader from "react-spinners/FadeLoader";
 const Testimonial = () => {
+  const [loading, setIsLoading] = useState(true);
   const [testimonialIndex, setTestimonialIndex] = useState(0);
   const [animationDirecton, setAnimationDirection] = useState("right");
   const [testimonials, setTestimonials] = useState([]);
@@ -30,18 +31,33 @@ const Testimonial = () => {
   };
   const fetchTestimonials = async () => {
     try {
+      setIsLoading(true);
       const testimonials = await axios.get(`${API_URL}testimonials`);
       setTestimonials(testimonials.data);
     } catch (error) {
       console.log(error);
+    } finally {
+      setIsLoading(false);
     }
   };
   useEffect(() => {
     fetchTestimonials();
   }, []);
   return (
-    <>
+    <section style={{ position: "relative" }}>
       <h2 className="head-text">Testimonials</h2>
+      {loading && (
+        <div className="app__loader">
+          <FadeLoader
+            size="20px"
+            height={15}
+            width={5}
+            radius={2}
+            margin={2}
+            color="red"
+          />
+        </div>
+      )}
       {testimonials.length > 0 && (
         <AnimatePresence exitBeforeEnter>
           <motion.div
@@ -93,7 +109,7 @@ const Testimonial = () => {
         </motion.button>
       </div>
       <Brands />
-    </>
+    </section>
   );
 };
 

@@ -3,6 +3,7 @@ import AppWrap from "../../wrapper/AppWrap";
 import MotionWrap from "../../wrapper/MotionWrap";
 import { motion } from "framer-motion";
 import axios from "axios";
+import FadeLoader from "react-spinners/FadeLoader";
 import "./Skills.scss";
 import { API_URL } from "../../config/config";
 const list = {
@@ -22,24 +23,44 @@ const item = {
 };
 const Skills = () => {
   const [icons, setIcons] = useState([]);
+  const [loading, setIsLoading] = useState(true);
   const [experiences, setExperiences] = useState([]);
   const fetchData = async () => {
-    const [skills, experiences] = await Promise.all([
-      axios.get(`${API_URL}skills`),
-      axios.get(`${API_URL}experiences`),
-    ]);
-    setIcons(skills.data[0].icons);
-    setExperiences(experiences.data);
+    try {
+      setIsLoading(true);
+      const [skills, experiences] = await Promise.all([
+        axios.get(`${API_URL}skills`),
+        axios.get(`${API_URL}experiences`),
+      ]);
+      setIcons(skills.data[0].icons);
+      setExperiences(experiences.data);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
   };
   useEffect(() => {
     fetchData();
   }, []);
   return (
-    <Suspense fallback="Loading...">
+    <>
       <h2 className="head-text">
         Skills & <span>Experiences</span>
       </h2>
       <div className="app__skills">
+        {loading && (
+          <div className="app__loader">
+            <FadeLoader
+              size="20px"
+              height={15}
+              width={5}
+              radius={2}
+              margin={2}
+              color="red"
+            />
+          </div>
+        )}
         <motion.div
           variants={list}
           initial="hidden"
@@ -92,7 +113,7 @@ const Skills = () => {
           ))}
         </div>
       </div>
-    </Suspense>
+    </>
   );
 };
 

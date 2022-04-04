@@ -3,6 +3,7 @@
   width: 80%;
   margin-top: 3rem;
   margin-left: 8rem;
+  position: relative;
   @media screen and (max-width: 900px) {
     align-items: center;
     justify-content: center;
@@ -11,6 +12,11 @@
     margin-left: 0;
     width: 100%;
   }
+}
+.app__loader {
+  position: absolute;
+  left: 50%;
+  top: 50%;
 }
 .app__skills-icons_container {
   flex: 1;
